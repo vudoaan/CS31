@@ -31,6 +31,4 @@
 	        cout << "KPop Demon Hunters is more popular than The Thursday Murder Club." << endl;
 	    else
 	        cout << "The Thursday Murder Club is more popular than KPop Demon Hunters." << endl;
-        
-        system("pause");
 	}
