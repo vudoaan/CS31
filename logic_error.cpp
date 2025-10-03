@@ -17,7 +17,7 @@
 	    cout << "How many of them prefer The Thursday Murder Club to KPop Demon Hunters? ";
 	    cin >> club;
 	
-	    double pctHunters = 100.0 * hunters / numberSurveyed;
+	    double pctHunters = 100.0 * hunters * numberSurveyed;
 	    double pctClub = 100.0 * club / numberSurveyed;
 
 	    cout.setf(ios::fixed);

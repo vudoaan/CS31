@@ -27,7 +27,7 @@
 	    cout << pctHunters << "% say they prefer KPop Demon Hunters." << endl;
 	    cout << pctClub << "% say they prefer The Thursday Murder Club." << endl;
 
-	    if (hunters > club)
+	    (hunters > club)
 	        cout << "KPop Demon Hunters is more popular than The Thursday Murder Club." << endl;
 	    else
 	        cout << "The Thursday Murder Club is more popular than KPop Demon Hunters." << endl;
