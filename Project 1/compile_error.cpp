@@ -23,7 +23,7 @@
 	    cout.setf(ios::fixed);
 	    cout.precision(1);
 	
-	    cout << endl;
+	    cout << endl
 	    cout << pctHunters << "% say they prefer KPop Demon Hunters." << endl;
 	    cout << pctClub << "% say they prefer The Thursday Murder Club." << endl;
 
