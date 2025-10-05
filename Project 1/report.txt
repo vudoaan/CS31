@@ -1,0 +1,13 @@
+Vu Doan
+COM SCI 31 Franz Hall 1260
+
+Step 5: For this step, I put some unreasonable integers for input, which caused unusual outputs.
+	The first example is that I put that -100 people were surveyed, and then put that 70 people preferred KPop Demon Hunters and 30 people preferred The Thursday Murder Club. This outputted that -70% preferred KPop Demon Hunters and -30% preferred The Thursday Murder Club. This isn’t possible as you can’t have a negative percentage of people, and you can’t have negative people being surveyed. 
+	Another example is that I put that 100 people were surveyed, but then put that 1000 people preferred KPop Demon Hunters, and that 7000 people preferred The Thursday Murder Club. This output showed that 100% prefer KPop Demon Hunters and that 70% preferred The Thursday Murder Club. This isn’t possible, as you can’t have 10 times and 70 times the number of people surveyed, respectively.
+
+Step 6: For the logic error, I replaced the division operator in the equation for the variable pctHunters with another multiplication operator. So instead of 100.0 * hunters / numberSurveyed, the equation was changed to 100.0 * hunters * numberSurveyed.
+	For example, I put that 100 people were surveyed, and then put that 80 people preferred KPop Demon Hunters and 20 people preferred The Thursday Murder Club. This output showed that 800,000.0% preferred KPop Demon Hunters and 20% preferred The Thursday Murder Club. This isn’t possible as you can’t have 100 times the number of people who preferred KPop Demon Hunters.
+
+Step 7: For this step, I removed a semicolon and a semicolon.
+	For the first error, I removed a semicolon from the output for a new line. So instead of cout << endl;, the line was changed to cout << endl. This resulted in the program not compiling, saying “error: expected ‘;’ before ‘cout’”. 
+	For the second error, I removed the if statement checking if more people preferred KPop demon hunters over The Thursday Murder Club. So instead of if (hunters > club)… , the statement was changed to (hunters > club)… . This resulted in the program not compiling, saying “error: 'else' without a previous 'if'”.  This also resulted in another error saying “error: expected ‘;’ before ‘cout’”. This is referring to the next statement, where we output if KPop Demon Hunters is more popular than The Thursday Murder Club.
