@@ -45,13 +45,15 @@ int main() {
         double additionalSettlementAmount = 0.09;
         if (institutionType == "media" || institutionType == "university")
             additionalSettlementAmount = 0.17;
-        pAmount = pAmount + ((basisAmount - 160) * additionalSettlementAmount);
-        if (basisAmount > 760) {
+        if (basisAmount <= 760)
+            pAmount = pAmount + ((basisAmount - 160) * additionalSettlementAmount);
+        else {
+            pAmount = pAmount + (600 * additionalSettlementAmount);
             pAmount = pAmount + ((basisAmount - 760) * 0.11);
-            std::cout << pAmount << std::endl;
         }
-    }    
-
+    }
+    
+    //Outputs 
     std::cout << "---" << std::endl;
     std::cout << "The settlement amount for institution is P" << pAmount << " trillion.";
 }
