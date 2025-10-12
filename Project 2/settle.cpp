@@ -23,9 +23,10 @@ int main() {
         //Prompting Basis Amount
         std::cout << "Enter the basis amount (in trillions): ";
         std::cin >> basisAmount;
-        std::cin.ignore(10000, '\n');
+        std::cin.ignore(100000, '\n');
         //Checking if basis amount is negative
-        if (basisAmount < 0) {
+        //Ask if you can use cin.fail() as it doesn't say that you can't in the project spec.
+        if (basisAmount < 0 || std::cin.fail()) {
             errorMessage = "The basis amount must be positive.";
         } else {
             //Prompting Institution Type
