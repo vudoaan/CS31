@@ -7,35 +7,35 @@ int main() {
     double pAmount;
     std::string institution;
     std::string institutionType;
+    std::string errorMessage;
     
     //Setting decimal point to 1
     std::cout.setf(std::ios::fixed);
     std::cout.precision(1);
     
     //Prompting Insitution
-    do {
-        std::cout << "Enter your instituion: ";
-        getline(std::cin, institution);
-        if (institution == "")
-            std::cerr << "You must enter an institution." << std::endl;
-    } while (institution == "");
-
-    //Prompting Basis Amount
-    do {
+    std::cout << "Enter your instituion: ";
+    getline(std::cin, institution);
+    //Checking if institution is an empty string
+    if (institution == "") {
+        errorMessage = "You must enter an institution.";
+    } else {
+        //Prompting Basis Amount
         std::cout << "Enter the basis amount (in trillions): ";
         std::cin >> basisAmount;
         std::cin.ignore(10000, '\n');
-        if (basisAmount < 0)
-            std::cerr << "The basis amount must be positive." << std::endl;
-    } while (basisAmount < 0);
-    
-    //Prompting Institution Type
-    do {
-        std::cout << "Enter your instituion type: ";
-        getline(std::cin, institutionType);
-        if (institutionType == "")
-            std::cerr << "You must enter an institution type." << std::endl;
-    } while (institutionType == "");
+        //Checking if basis amount is negative
+        if (basisAmount < 0) {
+            errorMessage = "The basis amount must be positive.";
+        } else {
+            //Prompting Institution Type
+            std::cout << "Enter your instituion type: ";
+            getline(std::cin, institutionType);
+            //Checking if institution type is an empty string
+            if (institutionType == "")
+                errorMessage = "You must enter an institution type.";       
+        }
+    }
 
     //pAmount Calculations
     if (basisAmount <= 160)
@@ -55,5 +55,8 @@ int main() {
     
     //Outputs 
     std::cout << "---" << std::endl;
-    std::cout << "The settlement amount for institution is P" << pAmount << " trillion.";
+    if (errorMessage == "") 
+        std::cout << "The settlement amount for " << institution << " is P" << pAmount << " trillion." << std::endl;
+    else
+        std::cout << errorMessage << std::endl;
 }
