@@ -26,7 +26,7 @@ int main() {
         std::cin.ignore(100000, '\n');
         //Checking if basis amount is negative
         //Ask if you can use cin.fail() as it doesn't say that you can't in the project spec.
-        if (basisAmount < 0 || std::cin.fail()) {
+        if (basisAmount <= 0) {
             errorMessage = "The basis amount must be positive.";
         } else {
             //Prompting Institution Type
