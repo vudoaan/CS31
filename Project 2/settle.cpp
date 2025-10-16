@@ -3,8 +3,8 @@
 
 int main() {
     //Initalizing variables
-    double basisAmount;
-    double pAmount;
+    double basisAmount = 0;
+    double pAmount = 0;
     std::string institution;
     std::string institutionType;
     std::string errorMessage;
@@ -14,23 +14,22 @@ int main() {
     std::cout.precision(1);
     
     //Prompting Insitution
-    std::cout << "Enter your instituion: ";
+    std::cout << "Institution: ";
     getline(std::cin, institution);
     //Checking if institution is an empty string
     if (institution == "") {
         errorMessage = "You must enter an institution.";
     } else {
         //Prompting Basis Amount
-        std::cout << "Enter the basis amount (in trillions): ";
+        std::cout << "Basis amount (in trillions): ";
         std::cin >> basisAmount;
         std::cin.ignore(100000, '\n');
         //Checking if basis amount is negative
-        //Ask if you can use cin.fail() as it doesn't say that you can't in the project spec.
         if (basisAmount <= 0) {
             errorMessage = "The basis amount must be positive.";
         } else {
             //Prompting Institution Type
-            std::cout << "Enter your instituion type: ";
+            std::cout << "Institution type: ";
             getline(std::cin, institutionType);
             //Checking if institution type is an empty string
             if (institutionType == "")
@@ -38,10 +37,10 @@ int main() {
         }
     }
 
-    //pAmount Calculations
-    if (basisAmount <= 160)
+    //Calculate total settlement based on basis amount tiers
+    if (basisAmount <= 160) {
         pAmount = basisAmount * 0.07;
-    if (basisAmount > 160) {
+    } else {
         pAmount = 160 * 0.07;
         double additionalSettlementAmount = 0.09;
         if (institutionType == "media" || institutionType == "university")
@@ -60,4 +59,5 @@ int main() {
         std::cout << "The settlement amount for " << institution << " is P" << pAmount << " trillion." << std::endl;
     else
         std::cout << errorMessage << std::endl;
+
 }
