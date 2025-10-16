@@ -2,14 +2,14 @@ VU DOAN
 COM SCI 31 Franz Hall 1260
 
 a. Notable Obstacles
-    - A notable obstacle for me exact spelling errors. I had to make sure that everything was spelled correctly and didn't have bad punctuation as this was a big part of the spec. A big spelling error for me was institution as I kept writing "instituion".
+    - A notable obstacle for me was exact spelling errors. I had to make sure that everything was spelled correctly and didn't have bad punctuation as this was a big part of the spec. A big spelling error for me was institution as I kept writing "instituion".
     - Another notable obstacle was writing the nested if else statement. It was hard for me to see which statement was in which statement but I later wrote my code cleanly so it would work correctly.
     - My last notable obstacle was writing the formula for the basis amount. At first I didn't really get it and it took me a couple tries to get the formula down correctly.
 
 b. List of test data
     Example: (institution, basisAmount, institutionType)
-    List of insitutions: (entertainment, finance, law firm, media, pharmaceutical, social service, tech, university, other)
-    - No insitution input ("", 232233, "pharmaceutical")
+    List of institutions: (entertainment, finance, law firm, media, pharmaceutical, social service, tech, university, other)
+    - No institution input ("", 232233, "pharmaceutical")
     - Negative basis amount ("Negative town", -123123, "finance")
     - No institution type ("Taco Truck", 4444, "")
     - Only spaces for the institution (" ", 999, "entertainment")
