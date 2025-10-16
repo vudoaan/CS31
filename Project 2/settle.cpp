@@ -24,7 +24,7 @@ int main() {
         std::cout << "Basis amount (in trillions): ";
         std::cin >> basisAmount;
         std::cin.ignore(100000, '\n');
-        //Checking if basis amount is negative
+        //Cecking if basis amount is negative
         if (basisAmount <= 0) {
             errorMessage = "The basis amount must be positive.";
         } else {
