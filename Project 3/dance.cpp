@@ -201,7 +201,7 @@ int main()
         int bb;
         ins = "WOW";
         bb = -999;
-        std::cerr << "Return Code: " << translateDance("u//d/3r///d/", ins, bb) << std::endl << "Instructions: " << ins << std::endl << "Bad Beat: " << bb << std::endl;
+        std::cerr << "Return Code: " << translateDance("6r//////00L/r/3u///", ins, bb) << std::endl << "Instructions: " << ins << std::endl << "Bad Beat: " << bb << std::endl;
         ins = "WOW";  // so we can detect whether translateDance sets ins
         bb = -999;    // so we can detect whether translateDance sets bb
         assert(translateDance("u//d/3r///d/", ins, bb) == 0  &&  ins == "u.dRRRd"  &&  bb == -999);
@@ -213,7 +213,7 @@ int main()
         assert(translateDance("d/3r//0d/", ins, bb) == 2 || translateDance("d/3r//0d/", ins, bb) == 3 && ins == "WOW" && bb == 4);
         ins = "WOW";
         bb = -999;
-        assert(translateDance("d0d/", ins, bb) == 1 && ins == "WOW" && bb == -999);
+        assert(translateDance("03u///10r//////////", ins, bb) == 0 && ins == "UUURRRRRRRRRR" && bb == -999);
         std::cerr << std::boolalpha << isSyntacticallyCorrect("d0d/") << std::endl;
-        std::cerr <<"All tests succeeded" << std::endl;
+        std::cerr <<"All tests succeeded" << std::endl; 
     }

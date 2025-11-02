@@ -1,1 +1,81 @@
-Vu
+Vu Doan
+COM SCI 31 Franz Hall 1260
+
+a. Notable Obstacles
+    - Reading the spec was difficult, I had to read it multiple times because I did not get what the spec was asking of me. At first, I did not understand what the syntax of the dance was. Second, I did not understand 
+    that there was a difference between translatable and syntatically correct.
+    - Understanding what the correct version of the dance strings were difficult because at first I did not get that each slash was a beat and the prefixes were the a direction and or freeze
+    - Creating the while loop for the functions isSyntaticallyCorrect and translateDance were difficult because I had to think about how many indices I had to increment by when going through each if statement. 
+    I overcame it by thinking about how many indices each string section was when I was looping
+    - I struggled with keeping track of each if statement. This was because there were many if else loops and differentiating between them was hard. This became easier after I added comments to each if else statement.
+    - The bad beat counter confused me because I did not understand which bad beat to return at first because it was different for each one.
+b. Pseudo Code
+    //Terms
+    //Valid Direction: 'u', 'U', 'd', 'D', 'l', 'L', 'r', 'R'
+    isSyntacticallyCorrect function {
+        if string is empty,
+            return true
+        repeatedly:
+            if character is not a freeze, valid direction, or beat,
+                return false;
+            else if character is beat,
+                increment one index
+            else if direction followed by beat,
+                increment two indices
+            else if single digit freeze followed by direciton followed by beat,
+                increment three indices
+            else if double digit freeze followed by direction followed by beat,
+                increment four indices
+            else
+                return false
+        return true
+    }
+
+    translateDance function {
+        copy orignal instructions
+        clear instructions
+        if not syntatically correct,
+            instructions become original instructions
+            return 1
+        repeatedly:
+            //sections of dances are seperated by a valid direction, freeze, or beat
+            find next section of the dance 
+            if freeze,
+                if freeze length is less than 2,
+                    bad beat is the next beat
+                    return 2
+                repeatedly for freeze amount of times unless is end of string:
+                    if beat is not slash,
+                        instructions become original instructions
+                        bad beat is the next beat
+                        return 3
+                    add uppercase direction to instructions
+                    increment one index and beat
+                if number of beats is not equal to freeze amount,
+                    instructions become original instructions
+                    bad beat is next beat
+                    return 4
+                increment three + number of freeze amount indices
+                increment number of freeze amount of beats
+            else if direction,
+                translate to lowercase version of direction
+                increment two indices and beats
+            else beat,
+                translate to a dot
+                increment one index and beat
+        return 0;
+    }
+c. List of Test Data
+    //Valid Direction: 'u', 'U', 'd', 'D', 'l', 'L', 'r', 'R'
+    - Syntatically wrong at the start -> should return false("10z/////r///3l///")
+    - Syntatically wrong in the middle -> should return false ("3r///rr//5r/")
+    - Syntatically wrong at the end -> ("2r/r//5y/////")
+    - Syntatically correct and translatable -> should return 0 with correct instructions ("6r//////L/r/3u///")
+    - Syntatically wrong in translate dance function -> should return 1 ("10f///////////")
+    - Syntatically wrong in translate dance function -> should return 1 ("r///00r/")
+    - Syntatically correct but not translatable -> should return 2 ("00r/r////02r//")
+    - Syntatically correct but not translatable -> should return 2 or 3 ("d/3r//0d/")
+    - Syntatically correct but not translatable -> should return 3 ("2r/3r///3r///")
+    - Syntatically correct but not translatable -> should return 3 ("d/3r//u/0d//2u/")
+    - Syntatically correct but not translatable -> should return 4 ("4r///")
+    - Syntatically correct but not translatable -> should return 4 ("d/4r///")
