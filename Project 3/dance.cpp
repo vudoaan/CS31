@@ -186,6 +186,7 @@ int translateDance(std::string dance, std::string& instructions, int& badBeat) {
             //Adds the beat to the instructions
             instructions += '.';
             //Adds 1 to index to iterate past the beat
+            beatCount++;
             i++;
         }
     }
@@ -201,7 +202,7 @@ int main()
         int bb;
         ins = "WOW";
         bb = -999;
-        std::cerr << "Return Code: " << translateDance("6r//////00L/r/3u///", ins, bb) << std::endl << "Instructions: " << ins << std::endl << "Bad Beat: " << bb << std::endl;
+        std::cerr << "Return Code: " << translateDance("///0u/", ins, bb) << std::endl << "Instructions: " << ins << std::endl << "Bad Beat: " << bb << std::endl;
         ins = "WOW";  // so we can detect whether translateDance sets ins
         bb = -999;    // so we can detect whether translateDance sets bb
         assert(translateDance("u//d/3r///d/", ins, bb) == 0  &&  ins == "u.dRRRd"  &&  bb == -999);
