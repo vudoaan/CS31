@@ -1,8 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <string>
-//Questions
-//
+
 int repeat(std::string a[], int n) {
     if (n < 0) {
         return -1;
@@ -13,8 +12,7 @@ int repeat(std::string a[], int n) {
     }
     return n;
 }
-//Questions
-//
+
 int detectMatch(const std::string a[], int n, std::string target) {
     if (n < 0) {
         return -1;
@@ -26,9 +24,7 @@ int detectMatch(const std::string a[], int n, std::string target) {
     }
     return -1;
 }
-//Questions
-//Are we checking for the first letter or are we checking the whole string alphabetically e.g ace and apple?
-//Alphabetical Question
+
 int detectMax(const std::string a[], int n) {
     if (n < 0) {
         return -1;
@@ -55,7 +51,6 @@ int detectMax(const std::string a[], int n) {
     return latest;
 }
 //Questions
-//Do we have to check if pos is bigger than n or less than 0?
 //What if pos is 1 and n is 4 but the array size is bigger than 4? Will we still have to change the rest of the array?
 //Extra Credit Question (No extra array)
 int circleLeft(std::string a[], int n, int pos) {
@@ -71,8 +66,7 @@ int circleLeft(std::string a[], int n, int pos) {
     a[n - 1] = temp;
     return pos;
 }
-//Questions
-//
+
 int enumerateRuns(const std::string a[], int n) {
     if (n < 0) {
         return -1;
@@ -87,8 +81,7 @@ int enumerateRuns(const std::string a[], int n) {
     }
     return counter;
 }
-//Questions
-//
+
 //Extra Credit Question (No extra array)
 int flip(std::string a[], int n) {
     if (n < 0) {
@@ -102,8 +95,7 @@ int flip(std::string a[], int n) {
     }
     return n;
 }
-//Questions
-//
+
 int detectDifference(const std::string a1[], int n1, const std::string a2[], int n2) {
     if (n1 < 0 || n2 < 0) {
         return -1;
@@ -123,13 +115,15 @@ int detectDifference(const std::string a1[], int n1, const std::string a2[], int
 //Can n1 ever be smaller than n2?
 //What does it mean to consider a sequence of 0 elements?
 int subsequence(const std::string a1[], int n1, const std::string a2[], int n2) {
-    if (n1 < 0 || n2 < 0) {
+    if (n1 < 0 || n2 < 0 || n1 < n2) {
         return -1;
+    } else if (n2 == 0) {
+        return 0;
     }
     int j;
     for (int i = 0; i < n1; i++) {
         if (a2[0] == a1[i]) {
-            for (j = 0; j < n2; j++) {
+            for (j = 1; j < n2 && i + j < n1; j++) {
                 if (a2[j] != a1[i+j]) {
                     break;
                 }
@@ -221,77 +215,77 @@ int main () {
     //Test for function repeat
     std::cerr << '\n' << "Test for function repeat\n---\n";
     std::string stuff[6] = { "mahi", "bon", "cous", "", "tar", "mur" };
-    int a = repeat(stuff, 6);
-    std::cerr << a << '\n' << stuff[4] << '\n' << "\nTest for function dectectMatch\n---\n";
+    int aa = repeat(stuff, 6);
+    std::cerr << aa << '\n' << stuff[4] << '\n' << "\nTest for function dectectMatch\n---\n";
 
     //Test for function dectectMatch
     std::string guys[9] = {"teoscar", "tyler", "max", "max", "will", "will", "will", "max", "max"};
-    int b = detectMatch(guys, 7, "will"); // returns 4
-    std::cerr << b << '\n'; 
-    int c = detectMatch(guys, 4, "miguel"); // returns -1 (no "miguel" in first 4)
-    std::cerr << c << '\n' << "\nTest for function detectMax\n---\n";
+    int bb = detectMatch(guys, 7, "will"); // returns 4
+    std::cerr << bb << '\n'; 
+    int cc = detectMatch(guys, 4, "miguel"); // returns -1 (no "miguel" in first 4)
+    std::cerr << cc << '\n' << "\nTest for function detectMax\n---\n";
 
     //Test for detectMax
     std::string people[5] = { "freddie", "will", "shohei", "yoshi", "mookie" };
-    int d = detectMax(people, 5);  // returns 3, since  yoshi  is latest
-    std::cerr << d << '\n' << "\nTest for function circleLeft\n---\n";
+    int dd = detectMax(people, 5);  // returns 3, since  yoshi  is latest
+    std::cerr << dd << '\n' << "\nTest for function circleLeft\n---\n";
 
     //Test for function circleLeft
     std::string folks[5] = { "will", "shohei", "freddie", "miguel", "max" };
-    int e = circleLeft(folks, 5, 1);  // returns 1 // folks now contains:  "will", "freddie", "miguel", "max", "shohei"
+    int ee = circleLeft(folks, 5, 1);  // returns 1 // folks now contains:  "will", "freddie", "miguel", "max", "shohei"
     for (int i = 0; i < 5; i++) {
         std::cerr << folks[i] << ' ';
     }
-    std::cerr << '\n' << e << '\n' << "\nTest for function enumerateRuns\n---\n";
+    std::cerr << '\n' << ee << '\n' << "\nTest for function enumerateRuns\n---\n";
 
     //Test for function enumerateRuns
-    int f = enumerateRuns(guys, 9);  //  returns 5
+    int ff = enumerateRuns(guys, 9);  //  returns 5
            //  The five sequences of consecutive identical items are
            //    "teoscar"
            //    "tyler"
            //    "max", "max"
            //    "will", "will", "will"
            //    "max", "max"
-    std::cerr << f << '\n' << "\nTest for function flip\n---\n";
+    std::cerr << ff << '\n' << "\nTest for function flip\n---\n";
 
     //Test for function flip
     std::string blue[6] = { "tyler", "andy", "", "blake", "max", "enrique"};
-    int g = flip(blue, 4);  // returns 4 // blue now contains:  "blake"  ""  "andy"  "tyler"  "max"  "enrique"
+    int gg = flip(blue, 4);  // returns 4 // blue now contains:  "blake"  ""  "andy"  "tyler"  "max"  "enrique"
     for (int i = 0; i < 6; i++) {
         std::cerr << blue[i] << ' ';
     }
-    std::cerr << '\n' << g << '\n' << "\nTest for function detectDifference\n---\n";
+    std::cerr << '\n' << gg << '\n' << "\nTest for function detectDifference\n---\n";
 
     //Test for function dectectDifference
     std::string players[6] = { "freddie", "will", "blake", "yoshi", "mookie", "shohei" };
-    int h = detectDifference(people, 5, players, 6);  //  returns 2
-    int i = detectDifference(people, 2, players, 1);  //  returns 1
-    std::cerr << h << '\n' << i << '\n' << "\nTest for function subsequence\n---\n";
+    int hh = detectDifference(people, 5, players, 6);  //  returns 2
+    int ii = detectDifference(people, 2, players, 1);  //  returns 1
+    std::cerr << hh << '\n' << ii << '\n' << "\nTest for function subsequence\n---\n";
 
     //Test for function subsequence
     std::string dodgers[10] = { "alex", "shohei", "andy", "mookie", "enrique", "tommy" };
     std::string dodgers1[10] = { "shohei", "andy", "mookie" };
-    int j = subsequence(dodgers, 6, dodgers1, 3);  // returns 1
+    int jj = subsequence(dodgers, 6, dodgers1, 3);  // returns 1
     std::string dodgers2[10] = { "alex", "mookie" };
-    int k = subsequence(dodgers, 5, dodgers2, 2);  // returns -1
-    std::cerr << j << '\n' << k << '\n' << "\nTest for function detectAny\n---\n";
+    int kk = subsequence(dodgers, 5, dodgers2, 2);  // returns -1
+    std::cerr << jj << '\n' << kk << '\n' << "\nTest for function detectAny\n---\n";
     
     //Test for function detectAny
     std::string set1[10] = { "enrique", "emmet", "mookie", "shohei"};
-    int l = detectAny(dodgers, 6, set1, 4);  // returns 1 (a1 has "shohei" there)
+    int ll = detectAny(dodgers, 6, set1, 4);  // returns 1 (a1 has "shohei" there)
     std::string set2[10] = { "clayton", "justin" };
-    int m = detectAny(dodgers, 6, set2, 2);  // returns -1 (a1 has none)
-    std::cerr << l << '\n' << m << '\n' << "\nTest for function split\n---\n";
+    int mm = detectAny(dodgers, 6, set2, 2);  // returns -1 (a1 has none)
+    std::cerr << ll << '\n' << mm << '\n' << "\nTest for function split\n---\n";
 
     //Test for function split
     std::string champs[9] = { "blakaee", "shohei", "blake", "will", "freddie", "yoshi", "max", "blakee", "well" };
-    int n = split(champs, 9, "miguel");  //  returns 5
+    int nn = split(champs, 9, "miguel");  //  returns 5
     for (int i = 0; i < 9; i++) {
         std::cerr << champs[i] << ' ';
     }
     std::cerr << '\n';
     std::string champs1[3] = { "blake", "blakaee", "blakee"};
-    int o = split(champs1, 3, "blakaeee"); // returns 1
+    int oo = split(champs1, 3, "blakaeee"); // returns 1
     for (int i = 0; i < 3; i++) {
         std::cerr << champs1[i] << ' ';
     }
@@ -304,13 +298,39 @@ int main () {
     // All elements > "miguel" (i.e., "will"  "yoshi", and "shohei")
     //   come after all others
     std::string champs2[4] = { "max", "yoshi", "blake", "shohei" };
-    int p = split(champs2, 4, "shohei");  //  returns 2
+    int pp = split(champs2, 4, "shohei");  //  returns 2
     // champs2 must now be either
     //      "max"  "blake"  "shohei"  "yoshi"
     // or   "blake"  "max"  "shohei"  "yoshi"
     // All elements < "shohei" (i.e., "blake" and "max") come before all
     // others.
     // All elements > "shohei" (i.e., "yoshi") come after all others.
-    std::cerr << '\n' << n << '\n' << o << '\n' << p;
+    //Incomplete Test from spec
+    std::cerr << '\n' << nn << '\n' << oo << '\n' << pp;
+    std::string a[4] = { "ma", "can", "tu", "do" };
+    assert(repeat(a, 4) == 4 && a[0] == "mama" && a[3] == "dodo");
+
+    std::string b[7] = { "will", "yoshi", "shohei", "freddie", "", "max", "shohei" };
+    assert(detectMatch(b, 7, "shohei") == 2);
+    assert(detectMatch(b, 2, "shohei") == -1);
+    assert(detectMax(b, 7) == 1);
+
+    std::string c[3] = { "max", "shohei", "tommy" };
+    assert(detectAny(b, 7, c, 3) == 2);
+    assert(flip(c, 3) == 3 && c[0] == "tommy" && c[2] == "max");
+
+    std::string d[4] = { "will", "yoshi", "freddie", "max" };
+    assert(detectDifference(b, 4, d, 4) == 2);
+    assert(circleLeft(d, 4, 1) == 1 && d[1] == "freddie" && d[3] == "yoshi");
+
+    std::string e[4] = { "shohei", "freddie", "", "max" };
+    assert(subsequence(b, 7, e, 4) == 2);
+
+    std::string f[5] = { "max", "max", "max", "yoshi", "yoshi" };
+    assert(enumerateRuns(f, 5) == 2);
+
+    assert(split(b, 7, "shohei") == 3);
+
+    std::cerr << "\nAll tests succeeded" << std::endl;
     return 0; 
 }
