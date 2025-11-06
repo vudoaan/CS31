@@ -33,10 +33,23 @@ int detectMax(const std::string a[], int n) {
     if (n < 0) {
         return -1;
     }
-    int latest = 0;
+    int j, latest = 0;
     for (int i = 0; i < n; i++) {
         if (a[i][0] > a[latest][0]) {
             latest = i;
+        } else if (a[i][0] == a[latest][0]) {
+            for (j = 0; j < a[i].length() && a[latest].length(); j++) {
+                if (a[i][j] != a[latest][j]) {
+                    break;
+                }
+            }
+            if (j == a[i].length() || j == a[latest].length()) {
+                if (a[i].length() > a[latest].length()) {
+                    latest = i;
+                }
+            } else if (a[i][j] > a[latest][j]) {
+                latest = i;
+            }
         }
     }
     return latest;
