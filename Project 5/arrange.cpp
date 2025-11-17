@@ -39,11 +39,18 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
         clearString(word, wordLength);
         wordLength = 0;
         for (i = 0; i < strlen(line); i++) {
-            if (!isspace(line[i])) {
+            if (line[i] == '-') {
                 word[wordLength] = line[i];
                 wordLength++;
-            }
-            if (isspace(line[i])) {
+                word[wordLength] = '\0'; 
+                strcpy(listOfWords[wordListIndex], word);
+                wordListIndex++;
+                clearString(word, wordLength);
+                wordLength = 0;
+            } else if (!isspace(line[i])) {
+                word[wordLength] = line[i];
+                wordLength++;
+            } else {
                 word[wordLength] = '\0';
                 if (wordLength > 0) {
                     strcpy(listOfWords[wordListIndex], word);
@@ -56,33 +63,34 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
         }
         //out << word << "\n";
         word[wordLength] = '\0';
-        strcpy(listOfWords[wordListIndex], word);
-        wordListIndex++;
+        if (strlen(word) != 0 ) {
+            strcpy(listOfWords[wordListIndex], word);
+            wordListIndex++;
+        }
         //out << wordListIndex;
         for (int j = 0; j < wordListIndex; j++) {
-            if (j > 0 && (strcmp(listOfWords[j - 1], "") != 0 && strcmp(listOfWords[j - 1], " ") != 0 && strcmp(listOfWords[j - 1], "\n") != 0)) {
+            if (j > 0) {
                 strcpy(previousWord, listOfWords[j - 1]);
             }
             if (strcmp(listOfWords[j], "<P>") == 0) {
-                if (lineLengthIndex != 0) {    
-                    if (wordSplitted == true) { 
-                        out << "\n";
-                        lineLengthIndex = 0;
-                    } else {    
-                        out << "\n\n";
-                        lineLengthIndex = 0;
-                    }
+                if (strcmp(listOfWords[j], previousWord) == 0) {
+                    continue;
+                }  
+                if (wordSplitted == true) { 
+                    out << "\n";
+                    lineLengthIndex = 0;
+                } else {    
+                    out << "\n\n";
+                    lineLengthIndex = 0;
                 }
             } else {
-                if (strlen(listOfWords[j]) > lineLength) {
-                    returncode = 2;
-                    for (int k = 0; k < spacesNeeded && lineLengthIndex != 0 && strlen(previousWord) + strlen(listOfWords[j]) + spacesNeeded < lineLength; k++) {
-                        out << "*";
-                        lineLengthIndex++;
+                if (strlen(listOfWords[j]) >= lineLength) {
+                    if (strlen(listOfWords[j]) > lineLength) {
+                        returncode = 2;
                     }
-                    if (strlen(previousWord) + strlen(listOfWords[j]) > lineLength) {
-                        out << '\n';
-                        lineLengthIndex = 0;
+                    for (int k = 0; k < spacesNeeded && lineLengthIndex != 0 && strlen(previousWord) + strlen(listOfWords[j]) + spacesNeeded < lineLength; k++) {
+                        out << " ";
+                        lineLengthIndex++;
                     }
                     for (int k = 0; k < strlen(listOfWords[j]); k++) {
                         if (lineLengthIndex >= lineLength) {
@@ -95,8 +103,14 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                         out << listOfWords[j][k];
                         lineLengthIndex++;
                     }
-                } else { 
-                    if (previousWord[strlen(previousWord) - 1] == '.' || previousWord[strlen(previousWord) - 1] == '?' || previousWord[strlen(previousWord) - 1] == ':') {
+                    if (strlen(previousWord) + strlen(listOfWords[j]) > lineLength) {
+                        out << '\n';
+                        lineLengthIndex = 0;
+                    }
+                } else {
+                    if (previousWord[strlen(previousWord) - 1] == '-') {
+                        spacesNeeded = 0;
+                    } else if (previousWord[strlen(previousWord) - 1] == '.' || previousWord[strlen(previousWord) - 1] == '?' || previousWord[strlen(previousWord) - 1] == ':') {
                         spacesNeeded = 2;
                     } else {
                         spacesNeeded = 1;
@@ -104,18 +118,17 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                     
                     if (lineLengthIndex + spacesNeeded + strlen(listOfWords[j]) <= lineLength) {
                         for (int k = 0; k < spacesNeeded && lineLengthIndex != 0; k++) {
-                            out << "*";
+                            out << " ";
                             lineLengthIndex++;
                         }
                         out << listOfWords[j];
                         lineLengthIndex += strlen(listOfWords[j]);
                         //out << lineLengthIndex;
                     } else {
-                        out << '\n';
-                        returncode = 2;
+                        out << '\n'; 
                         lineLengthIndex = 0;
                         for (int k = 0; k < spacesNeeded && lineLengthIndex != 0; k++) {
-                            out << "*";
+                            out << " ";
                             lineLengthIndex++;
                         }
                         out << listOfWords[j];
@@ -124,15 +137,13 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                     }
                     wordSplitted = false;
                 }
-                if (j == wordListIndex - 1) {
-                    strcpy(previousWord, listOfWords[j]);
-                }
             }
-            if (j > 0 && (strcmp(listOfWords[j - 1], "") != 0 && strcmp(listOfWords[j - 1], " ") != 0 && strcmp(listOfWords[j - 1], "\n") != 0) && strcmp(listOfWords[j], "<P>") != 0) {
-                    strcpy(previousWord, listOfWords[j - 1]);
+            if (j == wordListIndex - 1) {
+                strcpy(previousWord, listOfWords[j]);
             }
         }
     }
+    out << '\n';
     return returncode;
 }
 
@@ -168,3 +179,4 @@ much work; to accumulate work has almost become
 a passion with me: my study is so full of it now, that there is hardly
 an inch of room for any more.
 */
+
