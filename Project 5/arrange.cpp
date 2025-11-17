@@ -9,13 +9,6 @@ void clearString (char* arr, int length) {
     }
 }
 
-bool seperateHyphen (char* arr, int ) {
-
-
-
-    return true;
-}
-
 int arrange(int lineLength, std::istream& in, std::ostream& out) {
     //Returns 1 if the desired maximum line length is less than 1
     if (lineLength < 1) {
@@ -25,7 +18,7 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
     const int MAX = 120;
     int i, wordLength = 0, wordListIndex = 0, lineLengthIndex = 0, spacesNeeded = 0, returncode = 0;
 
-    bool haveOutput = false; 
+    bool wordSplitted = false;
 
     char line[MAX] = "";
 
@@ -35,7 +28,7 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
 
     char listOfWords[MAX][MAX] = {""};
 
-    char seperatedHyphen[MAX][MAX] = {""};
+    char seperatedHyphen [MAX][MAX] = {""};
     
     while(in.getline(line, MAX)) {
         //std::cout << "This is the current line: " << line << std::endl;
@@ -70,22 +63,16 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
             if (j > 0 && (strcmp(listOfWords[j - 1], "") != 0 && strcmp(listOfWords[j - 1], " ") != 0 && strcmp(listOfWords[j - 1], "\n") != 0)) {
                 strcpy(previousWord, listOfWords[j - 1]);
             }
-            if (false) {
-
-            } else if (strcmp(listOfWords[j], "<P>") == 0) {
-                if (lineLengthIndex > 0) {
-                    out << '\n';
-                    lineLengthIndex = 0;
-                    haveOutput = true;
+            if (strcmp(listOfWords[j], "<P>") == 0) {
+                if (lineLengthIndex != 0) {    
+                    if (wordSplitted == true) { 
+                        out << "\n";
+                        lineLengthIndex = 0;
+                    } else {    
+                        out << "\n\n";
+                        lineLengthIndex = 0;
+                    }
                 }
-                
-                if (haveOutput) {
-                    out << "\n";
-                    haveOutput = false;
-                }
-                lineLengthIndex = 0;
-                clearString(previousWord, strlen(listOfWords[j]));
-                continue;
             } else {
                 if (strlen(listOfWords[j]) > lineLength) {
                     returncode = 2;
@@ -102,10 +89,10 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                             out << '\n';
                             lineLengthIndex = 0;
                             clearString(previousWord, lineLength);
+                            wordSplitted = true;
                         }
                         previousWord[k] = listOfWords[j][k];
                         out << listOfWords[j][k];
-                        haveOutput = true;
                         lineLengthIndex++;
                     }
                 } else { 
@@ -121,7 +108,6 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                             lineLengthIndex++;
                         }
                         out << listOfWords[j];
-                        haveOutput = true;
                         lineLengthIndex += strlen(listOfWords[j]);
                         //out << lineLengthIndex;
                     } else {
@@ -133,10 +119,10 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                             lineLengthIndex++;
                         }
                         out << listOfWords[j];
-                        haveOutput = true;
                         lineLengthIndex += strlen(listOfWords[j]);
                         //out << lineLengthIndex;
                     }
+                    wordSplitted = false;
                 }
                 if (j == wordListIndex - 1) {
                     strcpy(previousWord, listOfWords[j]);
@@ -168,3 +154,17 @@ int main () {
         int returnCode = arrange(len, infile, std::cout);
         std::cout << "Return code is " << returnCode << std::endl;
 }
+
+/*
+It always does seem to me that I am doing more work than
+I should do. It is not that I object to the work, mind you;
+I like work: it fascinates me.       I can sit and look at it for hours. oh-my-god-what-the-hell
+I love to keep     it by me: the idea of getting
+rid
+of it nearly breaks my heart. <P> <P> <P> You cannot give me too
+much work; to accumulate work has almost become
+
+
+a passion with me: my study is so full of it now, that there is hardly
+an inch of room for any more.
+*/
