@@ -27,8 +27,6 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
     char previousWord [MAX] = "";
 
     char listOfWords[MAX][MAX] = {""};
-
-    char seperatedHyphen [MAX][MAX] = {""};
     
     while(in.getline(line, MAX)) {
         //std::cout << "This is the current line: " << line << std::endl;
@@ -56,18 +54,15 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                     strcpy(listOfWords[wordListIndex], word);
                     wordListIndex++;
                 }
-                //out << word << "\n";
                 clearString(word, wordLength);
                 wordLength = 0;
             }
         }
-        //out << word << "\n";
         word[wordLength] = '\0';
         if (strlen(word) != 0 ) {
             strcpy(listOfWords[wordListIndex], word);
             wordListIndex++;
         }
-        //out << wordListIndex;
         for (int j = 0; j < wordListIndex; j++) {
             if (j > 0) {
                 strcpy(previousWord, listOfWords[j - 1]);
@@ -123,7 +118,6 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                         }
                         out << listOfWords[j];
                         lineLengthIndex += strlen(listOfWords[j]);
-                        //out << lineLengthIndex;
                     } else {
                         out << '\n'; 
                         lineLengthIndex = 0;
@@ -133,7 +127,6 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                         }
                         out << listOfWords[j];
                         lineLengthIndex += strlen(listOfWords[j]);
-                        //out << lineLengthIndex;
                     }
                     wordSplitted = false;
                 }
@@ -143,7 +136,7 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
             }
         }
     }
-    out << '\n';
+    //out << 144 << '\n'; //Fix this
     return returncode;
 }
 
