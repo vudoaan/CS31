@@ -21,7 +21,6 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
     int i, wordLength = 0, wordListIndex = 0, lineLengthIndex = 0, spacesNeeded = 0, returncode = 0;
 
     bool wordSplitted = false;
-    bool newLineAlready = false;
 
     char line[MAX] = "";
 
