@@ -3,6 +3,8 @@
 #include <cstring>
 #include <cassert>
 
+using namespace std;
+
 void clearString (char* arr, int length) {
     for (int i = 0; i < length; i++) {
         arr[i] = '\0';
@@ -19,6 +21,7 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
     int i, wordLength = 0, wordListIndex = 0, lineLengthIndex = 0, spacesNeeded = 0, returncode = 0;
 
     bool wordSplitted = false;
+    bool newLineAlready = false;
 
     char line[MAX] = "";
 
@@ -72,7 +75,7 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
                     continue;
                 }  
                 if (wordSplitted == true) { 
-                    out << "\n";
+                    out << '\n'; 
                     lineLengthIndex = 0;
                 } else {    
                     out << "\n\n";
@@ -136,7 +139,9 @@ int arrange(int lineLength, std::istream& in, std::ostream& out) {
             }
         }
     }
-    //out << 144 << '\n'; //Fix this
+    if (lineLengthIndex > 0) {
+        out << '\n';
+    }
     return returncode;
 }
 
