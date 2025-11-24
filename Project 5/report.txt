@@ -2,16 +2,141 @@ Vu Doan
 COM SCI 31 Franz Hall 1260
 
 a. Notable Obstacles
-    -
-    -
-    -
+    - This project took me 16+ hours because I didn't know how much to increment word portion by and hyphens tripped me up a lot
+    - The hyphens was the hard part because there were many different cases for the hyphens
+    - I first had an approach of just making a word list and using the previous word to see what to change however
+    I decided that making a second array of booleans to see if the words were connected was better
+    - The edge cases in this project were super super hard. There are so many edge cases that I don't think I can finish them all
+    that said, I probably won't get full score because I tried to think of as many edge cases as possible
 b. Pseudo Code
+void clearString (char* arr, int length) {
+    loops through each index of the c string 
+        makes it a null chracter
+}
 
+int arrange(int lineLength, std::istream& in, std::ostream& out) {
+    if (length less than 1)
+        return 1
+    repeatedly get each line of the input:
+        loops through the word list and empties it
+        loops through the input line letter by letter:
+            if the letter is a hyphen
+                if were not in a word
+                    we're in a word now (inWord bool)
+                    we haven't outputted to the word list yet (hadPortion bool)
+                adds the hyphen to the word string
+                sets the continutation to if we have outputted to the word list yet (true if after a hyphen already)
+                output to word list
+                clearString
+                we've outputted to the word list
+            else if the letter is not a space
+                if were not in a word
+                    we're in a word now
+                    we haven't outputted to the word list yet
+                adds the letter or puncuation to the word string
+            else
+                if we were in a word and its not a space or newline
+                    output to word list
+                    clearString
+                we're no longer in a word (inWord bool)
+                we haven't outputted to a word list yet (hadPortion bool)
+        if we were in a word and its not a space or newline //last word of input line
+            output to word list
+            clearString
+        loops through word list word by word:
+            if loop is not on the 1st iteration
+                sets previous word to the word before the current index
+            if word is a paragraph header
+                if previous word is paragraph header
+                    go to next iteration
+                if we split a word before the paragraph header
+                    output only one new line
+                else
+                    output two new lines
+            else
+                if length of word is bigger or equal to line length
+                    if length of word is bigger than line length
+                        returncode is 2
+                    if theres output on the line already
+                        output new line
+                    add the correct amount of spaces
+                    loops through the word letter by letter:
+                        if we fill the line length
+                            output new line
+                        output the letter
+                else
+                    //Spacing
+                    if starting word or connected word portions
+                        no spaces needed
+                    else
+                        if ., ?, or :
+                            two spaces needed
+                        else
+                            one space needed
+                    if current line index, spaces, and length of word fit line length
+                        add spaces
+                    else
+                        add new line
+            if last word of line
+                previous word is last word of line
+    if we haven't outputted a newline
+        output a new line
+    return returncode
+}   
 c. List of Test Data
-"asdiohasdoahsdo
-asdalksdnlkasnd
+"------ - so-- - - - - - - what the hell" (length = 5, A bunch of hyphens, this is to make sure hyphens are correctly accounted for)
+
+"Henley-on-Thames" (length = 5, Seperated portion of words, from the spec)
+
+"so--called -s" (length = 3, Seperated portion of words)
+
+"I don't asodbaois
+evne know what to say
+I thin k I a <p> <p> <p>
+am going crazy" (length = 20, Multiple paragraph headers consecutively)
+
+"abcdefghij" (length = 5, input length longer than line length)
+
+"Hi   there--friend.  Bye--now?" (length = 20, mixed puncutation with hyphen)
+
+"what      
 
 
-aslkdjbaslkdbklasd
 
-laskdnalksdn <P> <P> <P> <P> <P> watermelon123 water tacos"
+
+
+
+
+
+
+the
+
+
+
+
+
+
+heck" (length = 20, a bunch of new line characters and spaces to see if word portioning is correct)
+
+"   hello    world   " (length = 20, leading spaces, trailing spaces, and spaces in between)
+
+"     " (any valid length, empty input line, should return nothing and output 0)
+
+"It always does seem to me that I am doing more work than
+  I should do. It is not that I object to the work, mind you;
+I like work: it fascinates me.       I can sit and look at it for hours.
+I love to keep     it by me: the idea of getting
+rid
+of it nearly breaks my heart. <P> You cannot give me too
+much work; to accumulate work has almost become
+
+
+a passion with me: my study is so full of it now, that there is hardly
+an inch of room for any more." (length = 400, insanely long length)
+
+"------ - so-- - - - - - - what the hell -s
+so--called		
+asdoasihdoi
+asoid bvanana? 
+
+ai am the banana" (length = 3, a combination of hyphens, puncutation, spaces, and random letters)
