@@ -1,0 +1,275 @@
+1a.
+int main()
+{
+    int arr[3] = { 5, 10, 15 };
+    int* ptr = arr;
+
+    *ptr = 30;  // set arr[0] to 30
+    *(ptr + 1) = 20;  // set arr[1] to 20
+    *(ptr + 2) = 10;  // set arr[2] to 10
+
+    while (ptr < arr + 3)
+    {
+        cout << *ptr << endl;   // print values
+        ptr++;
+    }
+}
+
+1b.
+The findMax function won't find the max because when you call the function, it is making a copy of the pointer and since we are returning nothing,
+the pointer will just disappear after we find the pointer to the max value. To fix this we have to add & to the int* pToMax paramater, making it
+pass by reference instead of passing by value. So int*& pToMax instead of int* pToMax.
+--Fixed Version Below--
+void findMax(int arr[], int n, int*& pToMax)
+{
+    if (n <= 0) 
+        return;      // no items, no maximum!
+
+    pToMax = arr;
+
+    for (int i = 1; i < n; i++)
+    {
+        if (arr[i] > *pToMax)
+            pToMax = &arr[i];
+    }
+}       
+
+int main()
+{
+    int nums[4] = { 6, 3, 15, 8 };
+    int* ptr = &nums[0];
+
+    findMax(nums, 4, ptr);
+    cout << "The maximum is at address " << ptr << endl;
+    cout << "It's at position " << ptr - nums << endl;
+    cout << "Its value is " << *ptr << endl;
+}
+
+1c.
+The main routine won't work because there is an unintialized pointer when you first make int* ptr. This will make it so that the function stores the value into a
+random memory which is dangerous. To fix it you need to declare an int with a random variable name. In this case result, and then make the pointer point to the address
+of result. Then the pointer will work correctly as it now points to the int result and result stores an integer value. 
+--Fixed Version Below--
+void computeCube(int n, int* ncubed) 
+{
+    *ncubed = n * n * n;
+}
+
+int main()
+{
+    int result;
+    int* ptr = &result; 
+    computeCube(5, ptr);
+    cout << "Five cubed is " << *ptr << endl;
+}
+
+1d.
+The implementation is wrong because you never dereference any of the pointers. We are comparing pointers instead of the values at the pointers (the characters).
+To fix this, we just need to derference in the while statement, the if statement, and the return statement. 
+--Fixed Version Below--
+// return true if two C strings are equal
+bool strequal(const char str1[], const char str2[])
+{
+    while (*str1 != 0  &&  *str2 != 0)  // zero bytes at ends
+    {
+        if (*str1 != *str2)  // compare corresponding characters
+            return false;
+        str1++;            // advance to the next character
+        str2++;
+    }
+    return *str1 == *str2;   //if both the pointers end in zero bytes (means the length and letters are the same) 
+}
+
+int main()
+{
+    char ta1[15] = "Hung";
+    char ta2[15] = "Hong";
+
+    if (strequal(ta1, ta2))
+        cout << "They're the same!\n";
+    else 
+        cout << "They are different!\n";
+}
+
+1e.
+The array made in the getPtrToArray() function disappears because it is limited to the scope of that function as it is a local variable. This means that ptr will be pointing
+to overridden memory when the f() function is done executing as the computer uses the memory where the original array was supposed to be as it has been marked free after
+being deleted after the getPtrToArray() function. So when executing the for loops, we will get junk values from the f() function for index 1 to 3 and index 100 to 98 
+as the original array values don't exist anymore.
+
+2a.
+double* cat;
+
+2b.
+double mouse[5];
+
+2c.
+cat = &mouse[4];
+
+2d.
+*cat = 25;
+
+2e.
+*(mouse + 3) = 42;
+
+2f.
+cat -= 3;
+
+2g.
+cat[1] = 54;
+
+2h.
+cat[0] = 17;
+
+2i.
+bool d = (cat == mouse);
+
+2j.
+bool b = (*cat == *(cat + 1));
+
+3a.
+double mean(const double* scores, int numScores)
+{
+    double tot = 0;
+    int i = 0;
+    while (i < numScores)
+    {
+        tot += *(scores + i);
+        i++;
+    }
+    return tot/numScores;
+}
+
+3b.
+// This function searches through str for the character chr.
+// If the chr is found, it returns a pointer into str where
+// the character was first found, otherwise nullptr (not found).
+
+const char* findTheChar(const char* str, char chr)
+{
+    for (int k = 0; *(str + k) != 0; k++) 
+        if (*(str + k) == chr)
+            return str + k;
+
+    return nullptr;
+}
+
+3c.
+const char* findTheChar(const char* str, char chr)
+{
+    while (*str != 0) {
+        if (*str == chr) {
+            return str; 
+        }
+        str++;
+    }
+
+    return nullptr;
+}
+
+4.
+--Anotation--
+#include <iostream>
+using namespace std;
+
+int* maxwell(int* a, int* b) //Returns the pointer of the bigger value
+{
+    if (*a > *b)
+        return a;
+    else
+        return b;
+}
+
+void swap1(int* a, int* b) //Swaps pointers a and b
+{
+    int* temp = a;
+    a = b;
+    b = temp;
+}
+
+void swap2(int* a, int* b) //Swaps value at pointers a and b
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int main()
+{
+    int array[6] = { 5, 3, 4, 17, 22, 19};
+
+    int* ptr = maxwell(array, &array[2]); //ptr = pointer to array[0] since array[0] > array[2]
+    *ptr = -1; //array[0] = -1;
+    ptr += 2; //ptr = pointer to array[2]
+    ptr[1] = 9; //ptr[1] = array[3] = 9;
+    *(array+1) = 79; //array[1] = 79
+    //array now: {-1, 79, 4, 9, 22, 19}
+
+    cout << &array[5] - ptr << endl; //Memory Address at array[5] - memory address of pointer(array[2]) = 3
+
+    swap1(&array[0], &array[1]); //Doesn't do anything since you are passing by value not reference
+    swap2(array, &array[2]); //Swaps values of array[0] and array[2]
+    //array now: {4, 79, -1, 9, 22, 19} 
+
+    for (int i = 0; i < 6; i++) //Prints out all the values
+        cout << array[i] << endl;
+}
+------
+Notation:
+    int array[6] = { 5, 3, 4, 17, 22, 19};
+    First block:
+    int* ptr = maxwell(array, &array[2]); //ptr = pointer to array[0] since array[0] > array[2]
+    *ptr = -1; //array[0] = -1;
+    ptr += 2; //ptr = pointer to array[2]
+    ptr[1] = 9; //ptr[1] = array[3] = 9;
+    *(array+1) = 79; //array[1] = 79
+    //array now: {-1, 79, 4, 9, 22, 19}
+
+    Second Block:
+    swap1(&array[0], &array[1]); //Doesn't do anything since you are passing by value not reference
+    swap2(array, &array[2]); //Swaps values of array[0] and array[2]
+    //array now: {4, 79, -1, 9, 22, 19} 
+
+1st Line: 3
+This is because after we execute the first block, ptr is pointing at array[2] and when you subtract two pointers of arrays you get the difference in their indices
+because array memory is consecutive. So we are subtracting memory at array[5] and ptr which is array[2], we get 3 because is is the difference between index 5 and index 2. 
+
+2nd Line: 4
+After executing the first block, we have {-1, 79, 4, 9, 22, 19}. We use swap1 which doesn't do anything since the parameters of swap1 are pass by value not pass by reference.
+This means that the original pointers are not affected in the main routine therefore swap2 isn't affected. After using swap2 in the second block, it swaps the values at array[0] and array[2] 
+using pointers which makes the array {4, 79, -1, 9, 22, 19}. We don't affect this index after this line so it says as is. Since we are printing array[0], we print 4.
+
+3rd Line: 79
+During the first block, we make make the value of pointer (array + 1) into 79 which is the same as saying array[1] = 79 because array points at array[0] and by pointer arithmetic
+*(array + 1) equals array[0 + 1]. We don't affect this index after this line so it doesn't change after the first block. Since we are printing array[1], we print 79.
+
+4th Line: -1
+After executing the first block, we have {-1, 79, 4, 9, 22, 19}. We use swap1 which doesn't do anything since the parameters of swap1 are pass by value not pass by reference.
+This means that the original pointers are not affected in the main routine therefore swap2 isn't affected. After using swap2 in the second block, it swaps the values at array[0] and array[2] 
+using pointers which makes the array {4, 79, -1, 9, 22, 19}. We don't affect this index after this line so it says as is. Since we are printing array[2], we print -1.
+
+5th Line: 9
+During the first block, we make ptr[1] = 9 but since ptr was pointing at array[2] during this line, we actually affect array[3] with ptr[1]. ptr was pointing at 
+array[2] because the function maxwell set to the pointer to array[0] as the value at array[0] was bigger than array[2]. Then we increment pointer by 2 so this lead us
+to pointing at array[2]. After this line, ptr[1]/array[3] is not affected. Since we are printing array[3], we print 9.
+
+6th Line: 22
+array[4] was never affected by the main routine. Since we are printing array[4], we print 22.
+
+7th Line: 19
+array[5] was never affected by the main routine. Since we are printing array[5], we print 19.
+
+5.
+void removeS (char* str) {
+    //str acts as a writer 
+    char* index = str; //Index is what character we are currently reading
+    while (*index != 0) { //Loops through the whole c-string until we see a zero byte
+        if (*index != 's' && *index != 'S') { //If it is not a s or S then we write the char and increment str
+            *str = *index;
+            str++;
+        }
+        index++; //we always increment index as we always want to read
+    }
+    //Make sure to end the string with a zero byte after we removed all the s and S
+    *str = 0;
+}
