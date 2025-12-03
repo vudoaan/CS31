@@ -61,7 +61,6 @@ class Zombie
     int    m_col;
     int m_nOfPBrains;
     bool canMove;
-    bool hasMoved;
 };
 
 class Player
@@ -171,7 +170,6 @@ Zombie::Zombie(Arena* ap, int r, int c)
     m_row = r;
     m_col = c;
     canMove = true;
-    hasMoved = false;
 }
 
 int Zombie::row() const
@@ -206,12 +204,7 @@ void Zombie::move()
 
       //   This illustrates how you can select a random direction:
       //   int dir = randInt(0, NUMDIRS-1);  // dir is now UP, DOWN, LEFT, or RIGHT
-      
-      
-      if (canMove == false) {
-        hasMoved = false;
-        return;
-      }
+      int dir = randInt(0, NUMDIRS-1);
 
       if (m_arena->getCellStatus(m_row, m_col) == '*') {
         canMove == false;
@@ -219,9 +212,16 @@ void Zombie::move()
         m_arena->setCellStatus(m_row, m_col, EMPTY);
         return;
       }
-
-      int dir = randInt(0, NUMDIRS-1);
-
+      //If can't move, don't move but can move next turn
+      if (canMove == false) {
+        canMove == true;
+        return;
+      }
+      //If moved and poisoned brain, next turn can't move
+      if (m_nOfPBrains == 1) {
+        canMove == false;
+      }
+      attemptMove(*m_arena, dir, m_row, m_col); 
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -455,8 +455,15 @@ bool Arena::addPlayer(int r, int c)
 void Arena::moveZombies()
 {
       // Move all zombies
-      // TODO:  Move each zombie.  Mark the player as dead if necessary.
-      //        Deallocate any dead dynamically allocated zombie.
+      int i = 0;
+      while (i < m_nZombies) {
+        if (m_zombies[i]->isDead()) {
+          delete m_zombies[i];
+          m_nZombies--;
+          moveArrayLeft(m_zombies, i, m_nZombies);
+        }
+        i++;
+      }
       for (int i = 0; i < m_nZombies; i++) {
         m_zombies[i]->move();
       }
@@ -652,6 +659,13 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
       // zombie might be poisoned and thus sometimes less dangerous than one
       // that is not.  That requires a more sophisticated analysis that
       // we're not asking you to do.
+}
+
+//Moves the array down left
+void moveArrayLeft (Zombie* arr[], int start, int end) {
+  for (int i = start; i < end; i++) {
+    arr[i] = arr[i + 1];
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////
