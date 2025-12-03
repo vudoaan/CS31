@@ -460,12 +460,13 @@ void Arena::moveZombies()
         if (m_zombies[i]->isDead()) {
           delete m_zombies[i];
           m_nZombies--;
-          moveArrayLeft(m_zombies, i, m_nZombies);
+          for (int j = i; j < m_nZombies; j++) {
+              m_zombies[j] = m_zombies[j + 1];
+          }
+        } else {
+          m_zombies[i]->move();
+          i++;
         }
-        i++;
-      }
-      for (int i = 0; i < m_nZombies; i++) {
-        m_zombies[i]->move();
       }
 }
 
@@ -661,12 +662,6 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
       // we're not asking you to do.
 }
 
-//Moves the array down left
-void moveArrayLeft (Zombie* arr[], int start, int end) {
-  for (int i = start; i < end; i++) {
-    arr[i] = arr[i + 1];
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////
 // main()
