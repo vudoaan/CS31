@@ -192,7 +192,8 @@ bool Zombie::isDead() const
 
 void Zombie::move()
 {
-      // TODO:
+    // I THINK ITS DONE  
+    // TODO:
       //   Return without moving if the zombie has eaten one poisoned
       //   brain (so is supposed to move only every other turn) and
       //   this is a turn it does not move.
@@ -205,23 +206,25 @@ void Zombie::move()
       //   This illustrates how you can select a random direction:
       //   int dir = randInt(0, NUMDIRS-1);  // dir is now UP, DOWN, LEFT, or RIGHT
       int dir = randInt(0, NUMDIRS-1);
-
+      //Eats poison brain and this turn it doesn not move
       if (m_arena->getCellStatus(m_row, m_col) == '*') {
         canMove == false;
         m_nOfPBrains++;
         m_arena->setCellStatus(m_row, m_col, EMPTY);
         return;
       }
-      //If can't move, don't move but can move next turn
+      //If step first move after eating poison brain don't move, then alternate
       if (canMove == false) {
-        canMove == true;
+        canMove = true;
         return;
       }
-      //If moved and poisoned brain, next turn can't move
+      //Attempt to move
+      attemptMove(*m_arena, dir, m_row, m_col); 
+      //If eaten poison brain
       if (m_nOfPBrains == 1) {
         canMove == false;
+        return;
       }
-      attemptMove(*m_arena, dir, m_row, m_col); 
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -267,7 +270,7 @@ string Player::dropPoisonedBrain()
 
 string Player::move(int dir)
 {
-      // TODO:  Attempt to move the player one step in the indicated
+    // TODO:  Attempt to move the player one step in the indicated
       //        direction.  If this fails,
       //        return "Player couldn't move; player stands."
       //        If the player moves onto a zombie, the player dies and this
@@ -275,8 +278,7 @@ string Player::move(int dir)
       //        Otherwise, return one of "Player moved north.",
       //        "Player moved east.", "Player moved south.", or
       //        "Player moved west."
-
-    return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
+      return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
 }
 
 bool Player::isDead() const
