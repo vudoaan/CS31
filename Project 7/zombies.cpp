@@ -1,13 +1,3 @@
-// zombies.cpp
-
-// Portions that you are to complete are marked with a TODO: comment.
-// We've provided some incorrect return statements (so indicated) just
-// to allow this skeleton program to compile and run, albeit incorrectly.
-// The first thing you probably want to do is implement the utterly trivial
-// functions (marked TRIVIAL).  Then get Arena::display going.  That gives
-// you more flexibility in the order that you choose to tackle the rest of
-// the functionality.  As you finish implementing each TODO: item, remove
-// its TODO: comment; that makes it easier to find what you have left to do.
 #include <iostream>
 #include <string>
 #include <random>
@@ -169,6 +159,7 @@ Zombie::Zombie(Arena* ap, int r, int c)
     m_arena = ap;
     m_row = r;
     m_col = c;
+    m_nOfPBrains = 0;
     canMove = true;
 }
 
@@ -192,39 +183,26 @@ bool Zombie::isDead() const
 
 void Zombie::move()
 {
-    // I THINK ITS DONE  
-    // TODO:
-      //   Return without moving if the zombie has eaten one poisoned
-      //   brain (so is supposed to move only every other turn) and
-      //   this is a turn it does not move.
-
-      //   Otherwise, attempt to move in a random direction; if can't
-      //   move, don't move.  If it lands on a poisoned brain, eat the
-      //   brain and remove it from the game (so it is no longer on that
-      //   grid point).
-
-      //   This illustrates how you can select a random direction:
-      //   int dir = randInt(0, NUMDIRS-1);  // dir is now UP, DOWN, LEFT, or RIGHT
-      int dir = randInt(0, NUMDIRS-1);
-      //Eats poison brain and this turn it doesn not move
-      if (m_arena->getCellStatus(m_row, m_col) == '*') {
-        canMove == false;
+    if (m_nOfPBrains == 1) {
+      if (canMove == false) {  
+        canMove = true;
+        return;
+      }
+      canMove = false;
+    }
+    int dir = randInt(0, NUMDIRS-1);
+    //Eats poison brain and this turn it doesnt not move
+    if (attemptMove(*m_arena, dir, m_row, m_col)) {
+      if (m_arena->player()->row() == m_row && m_arena->player()->col() == m_col) {
+          m_arena->player()->setDead();
+      }
+      if (m_arena->getCellStatus(m_row, m_col) == HAS_POISON) {
+        canMove = false;
         m_nOfPBrains++;
         m_arena->setCellStatus(m_row, m_col, EMPTY);
         return;
       }
-      //If step first move after eating poison brain don't move, then alternate
-      if (canMove == false) {
-        canMove = true;
-        return;
-      }
-      //Attempt to move
-      attemptMove(*m_arena, dir, m_row, m_col); 
-      //If eaten poison brain
-      if (m_nOfPBrains == 1) {
-        canMove == false;
-        return;
-      }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -270,14 +248,27 @@ string Player::dropPoisonedBrain()
 
 string Player::move(int dir)
 {
-    // TODO:  Attempt to move the player one step in the indicated
-      //        direction.  If this fails,
-      //        return "Player couldn't move; player stands."
-      //        If the player moves onto a zombie, the player dies and this
-      //        returns "Player walked into a zombie and died."
-      //        Otherwise, return one of "Player moved north.",
-      //        "Player moved east.", "Player moved south.", or
-      //        "Player moved west."
+
+      if (attemptMove(*m_arena, dir, m_row, m_col)) {
+        if (m_arena->numberOfZombiesAt(m_row, m_col) > 0) {
+          setDead();
+          return "Player walked into a zombie and died.";
+        }
+        switch (dir) {
+          case NORTH:
+            return "Player moved north.";
+            break;
+          case EAST:
+            return "Player moved east.";
+            break;
+          case SOUTH:
+            return "Player moved south.";
+            break;
+          case WEST:
+            return "Player moved west.";
+            break;
+        }
+      }
       return "Player couldn't move; player stands.";  // This implementation compiles, but is incorrect.
 }
 
@@ -371,12 +362,11 @@ void Arena::display(string msg) const
         for (c = 1; c <= cols(); c++)
             displayGrid[r-1][c-1] = (getCellStatus(r,c) == EMPTY ? '.' : '*');
 
-      // Indicate each zombie's position
-    for (int i = 0; i < m_nZombies; i++) {
+      for (int i = 0; i < m_nZombies; i++) {
       if (numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col()) >= 9) {
         displayGrid[m_zombies[i]->row() - 1][m_zombies[i]->col() - 1] = '9';
-      } else if (numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col()) >= 2 || numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col()) < 9) {
-        displayGrid[m_zombies[i]->row() - 1][m_zombies[i]->col() - 1] = numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col());
+      } else if (numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col()) >= 2 && numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col()) < 9) {
+        displayGrid[m_zombies[i]->row() - 1][m_zombies[i]->col() - 1] = numberOfZombiesAt(m_zombies[i]->row(), m_zombies[i]->col()) + '0';
       } else {
         displayGrid[m_zombies[i]->row() - 1][m_zombies[i]->col() - 1] = 'Z';
       }
@@ -433,6 +423,7 @@ bool Arena::addZombie(int r, int c)
       return false;
     } else {
       m_zombies[m_nZombies] = new Zombie(this, r, c);
+      m_nZombies++;
       return true;
     }
 }
@@ -629,9 +620,34 @@ bool decodeDirection(char ch, int& dir)
   // return true.
 bool attemptMove(const Arena& a, int dir, int& r, int& c)
 {
-      // TODO:  Implement this function
-      // Delete the following line and replace it with the correct code.
-    return false;  // This implementation compiles, but is incorrect.
+
+    switch (dir) {
+      case NORTH:
+        if (r > 1) {  
+          r--;  
+          return true;
+        }
+        break;
+      case EAST:
+        if (c < a.cols()) {
+          c++;
+          return true;
+        }
+        break;
+      case SOUTH:
+        if (r < a.rows()) {
+          r++;
+          return true;
+        }
+        break;
+      case WEST:
+        if (c > 1) {
+          c--;
+          return true;
+        }
+        break;
+    }
+    return false;
 }
 
   // Recommend a move for a player at (r,c):  A false return means the
@@ -642,7 +658,9 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 {
       // TODO:  Implement this function
       // Delete the following line and replace it with your code.
-    return false;  // This implementation compiles, but is incorrect.
+  
+    
+    return false;
 
       // Your replacement implementation should do something intelligent.
       // You don't have to be any smarter than the following, although
