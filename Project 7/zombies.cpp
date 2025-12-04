@@ -620,7 +620,6 @@ bool decodeDirection(char ch, int& dir)
   // return true.
 bool attemptMove(const Arena& a, int dir, int& r, int& c)
 {
-
     switch (dir) {
       case NORTH:
         if (r > 1) {  
@@ -656,11 +655,55 @@ bool attemptMove(const Arena& a, int dir, int& r, int& c)
   // direction to move and returns true.
 bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 {
-      // TODO:  Implement this function
-      // Delete the following line and replace it with your code.
-  
-    
-    return false;
+    // TODO:  Implement this function
+    // Delete the following line and replace it with your code.
+    int dir = 0;
+    bool zDir[4] = {false , false , false, false};
+    if (r - 1 >= 1 && a.numberOfZombiesAt(r - 1, c) > 0)
+      zDir[NORTH] = true;
+    if (c + 1 <= a.cols() && a.numberOfZombiesAt(r, c + 1) > 0)
+      zDir[EAST] = true;
+    if (r + 1 <= a.rows() && a.numberOfZombiesAt(r + 1, c) > 0)
+      zDir[SOUTH] = true;
+    if (c - 1 >= 1 && a.numberOfZombiesAt(r, c - 1) > 0)
+      zDir[WEST] = true;
+    //Checks if theres no zombie surrounding you or if you are surrounded, best bet is to just stay still for both
+    if (!(zDir[NORTH] || zDir[EAST] || zDir[SOUTH] || zDir[WEST]) || 
+          (zDir[NORTH] && zDir[EAST] && zDir[SOUTH] && zDir[WEST]))
+      return false;
+    for (dir = 0; dir < 4; dir++) {
+      if (zDir[dir]) {
+        continue;
+      } else {
+        switch (dir) {
+          case NORTH:
+            if (r > 1) {
+              bestDir = NORTH;
+              return true;
+            }
+            continue;
+          case EAST:
+            if (c < a.cols()) {
+              bestDir = EAST;
+              return true;
+            }
+            continue;
+          case SOUTH:
+            if (r < a.rows()) {
+              bestDir = SOUTH;
+              return true;
+            }
+            continue;
+          case WEST:
+            if (c > 1) {
+              bestDir = WEST;
+              return true;
+            }
+            continue;
+        }
+      }
+    }
+    return true;
 
       // Your replacement implementation should do something intelligent.
       // You don't have to be any smarter than the following, although
