@@ -274,10 +274,7 @@ string Player::move(int dir)
 
 bool Player::isDead() const
 {
-    if (m_arena->numberOfZombiesAt(m_row, m_col) >= 1) {
-      return true;
-    }
-    return false;
+    return m_dead;
 }
 
 void Player::setDead()
@@ -450,6 +447,7 @@ void Arena::moveZombies()
       // Move all zombies
       int i = 0;
       while (i < m_nZombies) {
+        m_zombies[i]->move();
         if (m_zombies[i]->isDead()) {
           delete m_zombies[i];
           m_nZombies--;
@@ -457,7 +455,6 @@ void Arena::moveZombies()
               m_zombies[j] = m_zombies[j + 1];
           }
         } else {
-          m_zombies[i]->move();
           i++;
         }
       }
@@ -657,87 +654,303 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
 {
     // TODO:  Implement this function
     // Delete the following line and replace it with your code.
-    int dir = 0;
+    int dangerlvlAhead[4] = {0, 0, 0, 0};
+    int lowdangerlvl = 0;
     bool zDir[4] = {false , false , false, false};
-    if (r - 1 >= 1 && a.numberOfZombiesAt(r - 1, c) > 0)
+    if (r - 1 >= 1 && a.numberOfZombiesAt(r - 1, c) > 0) {
       zDir[NORTH] = true;
-    if (c + 1 <= a.cols() && a.numberOfZombiesAt(r, c + 1) > 0)
+      dangerlvlAhead[NORTH] = 99999;
+    }
+    if (c + 1 <= a.cols() && a.numberOfZombiesAt(r, c + 1) > 0) {
       zDir[EAST] = true;
-    if (r + 1 <= a.rows() && a.numberOfZombiesAt(r + 1, c) > 0)
+      dangerlvlAhead[EAST] = 99999;
+    }
+    if (r + 1 <= a.rows() && a.numberOfZombiesAt(r + 1, c) > 0) {
       zDir[SOUTH] = true;
-    if (c - 1 >= 1 && a.numberOfZombiesAt(r, c - 1) > 0)
+      dangerlvlAhead[SOUTH] = 99999;
+    }
+    if (c - 1 >= 1 && a.numberOfZombiesAt(r, c - 1) > 0) {
       zDir[WEST] = true;
+      dangerlvlAhead[WEST] = 99999;
+    }
     //Checks if theres no zombie surrounding you or if you are surrounded, best bet is to just stay still for both
     if (!(zDir[NORTH] || zDir[EAST] || zDir[SOUTH] || zDir[WEST]) || 
           (zDir[NORTH] && zDir[EAST] && zDir[SOUTH] && zDir[WEST]))
       return false;
-    for (dir = 0; dir < 4; dir++) {
-      if (zDir[dir]) {
+    for (int i = 0; i < 4; i++) {
+    bool isWall = false;
+      if (i == NORTH && r <= 1) isWall = true;
+      if (i == EAST  && c >= a.cols()) isWall = true;
+      if (i == SOUTH && r >= a.rows()) isWall = true;
+      if (i == WEST  && c <= 1) isWall = true;
+
+      if (isWall) {
+          dangerlvlAhead[i] = 99999; 
+          continue;
+      }
+      if (zDir[i]) {
         continue;
       } else {
-        switch (dir) {
+        switch (i) {
           case NORTH:
-            if (r > 1) {
-              bestDir = NORTH;
-              return true;
+            //r - 1, c
+            if (r - 2 >= 1 && a.numberOfZombiesAt(r - 2, c) > 0) {
+              dangerlvlAhead[NORTH] += a.numberOfZombiesAt(r - 2, c);
+            }
+            if (c - 1 >= 1 && a.numberOfZombiesAt(r - 1, c - 1) > 0) {
+              dangerlvlAhead[NORTH] += a.numberOfZombiesAt(r - 1, c - 1);
+            }
+            if (c + 1 <= a.cols() && a.numberOfZombiesAt(r - 1, c + 1) > 0) {
+              dangerlvlAhead[NORTH] += a.numberOfZombiesAt(r - 1, c + 1);
             }
             continue;
           case EAST:
-            if (c < a.cols()) {
-              bestDir = EAST;
-              return true;
+            //r, c + 1
+            if (c + 2 <= a.cols() && a.numberOfZombiesAt(r , c + 2) > 0) {
+              dangerlvlAhead[EAST] += a.numberOfZombiesAt(r, c + 2);
+            }
+            if (r - 1 >= 1 && a.numberOfZombiesAt(r - 1, c + 1) > 0) {
+              dangerlvlAhead[EAST] += a.numberOfZombiesAt(r - 1, c + 1);
+            }
+            if (r + 1 <= a.rows() && a.numberOfZombiesAt(r + 1, c + 1) > 0) {
+              dangerlvlAhead[EAST] += a.numberOfZombiesAt(r + 1, c + 1);
             }
             continue;
           case SOUTH:
-            if (r < a.rows()) {
-              bestDir = SOUTH;
-              return true;
+            //r + 1, c
+            if (r + 2 <= a.rows() && a.numberOfZombiesAt(r + 2, c) > 0) {
+              dangerlvlAhead[SOUTH] += a.numberOfZombiesAt(r + 2, c);
+            }
+            if (c - 1 >= 1 && a.numberOfZombiesAt(r + 1, c - 1) > 0) {
+              dangerlvlAhead[SOUTH] += a.numberOfZombiesAt(r + 1, c - 1);
+            }
+            if (c + 1 <= a.cols() && a.numberOfZombiesAt(r + 1, c + 1) > 0) {
+              dangerlvlAhead[SOUTH] += a.numberOfZombiesAt(r + 1, c + 1);
             }
             continue;
           case WEST:
-            if (c > 1) {
-              bestDir = WEST;
-              return true;
+            //r, c - 1
+            if (c - 2 >= 1 && a.numberOfZombiesAt(r , c - 2) > 0) {
+              dangerlvlAhead[WEST] += a.numberOfZombiesAt(r, c - 2);
+            }
+            if (r - 1 >= 1 && a.numberOfZombiesAt(r - 1, c - 1) > 0) {
+              dangerlvlAhead[WEST] += a.numberOfZombiesAt(r - 1, c - 1);
+            }
+            if (r + 1 <= a.rows() && a.numberOfZombiesAt(r + 1, c - 1) > 0) {
+              dangerlvlAhead[WEST] += a.numberOfZombiesAt(r + 1, c - 1);
             }
             continue;
         }
       }
     }
-    return true;
+    for (int i = 0; i < 4; i++) {
+      if (!zDir[i]) {
+        bestDir = i;
+        break;
+      }
+    }
 
-      // Your replacement implementation should do something intelligent.
-      // You don't have to be any smarter than the following, although
-      // you can if you want to be:  If staying put runs the risk of a
-      // zombie possibly moving onto the player's location when the zombies
-      // move, yet moving in a particular direction puts the player in a
-      // position that is safe when the zombies move, then the chosen
-      // action is to move to a safer location.  Similarly, if staying put
-      // is safe, but moving in certain directions puts the player in
-      // danger of dying when the zombies move, then the chosen action should
-      // not be to move in one of the dangerous directions; instead, the player
-      // should stay put or move to another safe position.  In general, a
-      // position that may be moved to by many zombies is more dangerous than
-      // one that may be moved to by few.
-      //
-      // Unless you want to, you do not have to take into account that a
-      // zombie might be poisoned and thus sometimes less dangerous than one
-      // that is not.  That requires a more sophisticated analysis that
-      // we're not asking you to do.
+    for (int i = 0; i < 4; i++) {
+      if (dangerlvlAhead[i] < dangerlvlAhead[bestDir])  
+        bestDir = i;
+    }
+    return true;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
 // main()
 ///////////////////////////////////////////////////////////////////////////
+void doBasicTests();
+#include <type_traits>
+#include <cstdlib>
+#include <cassert>
 
+#define CHECKTYPE(c, f, r, a)  \
+    static_assert(std::is_same<decltype(&c::f), r (c::*)a>::value, \
+       "FAILED: You changed the type of " #c "::" #f);  \
+    { [[gnu::unused]] auto p = static_cast<r (c::*) a>(&c::f); }
+
+void thisFunctionWillNeverBeCalled()
+{
+      // If the student deleted or changed the interfaces to the public
+      // functions, this won't compile.  (This uses magic beyond the scope
+      // of CS 31.)
+
+    Zombie z(static_cast<Arena*>(0), 1, 1);
+    CHECKTYPE(Zombie, row, int, () const);
+    CHECKTYPE(Zombie, col, int, () const);
+    CHECKTYPE(Zombie, isDead, bool, () const);
+    CHECKTYPE(Zombie, move, void, ());
+
+    Player p(static_cast<Arena*>(0), 1, 1);
+    CHECKTYPE(Player, row, int, () const);
+    CHECKTYPE(Player, col, int, () const);
+    CHECKTYPE(Player, isDead, bool, () const);
+    CHECKTYPE(Player, dropPoisonedBrain, string, ());
+    CHECKTYPE(Player, move, string, (int));
+    CHECKTYPE(Player, setDead, void, ());
+
+    Arena a(1, 1);
+    CHECKTYPE(Arena, rows, int, () const);
+    CHECKTYPE(Arena, cols, int, () const);
+    CHECKTYPE(Arena, player, Player*, () const);
+    CHECKTYPE(Arena, zombieCount, int, () const);
+    CHECKTYPE(Arena, getCellStatus, int, (int,int) const);
+    CHECKTYPE(Arena, numberOfZombiesAt, int, (int,int) const);
+    CHECKTYPE(Arena, display, void, (string) const);
+    CHECKTYPE(Arena, setCellStatus, void, (int,int,int));
+    CHECKTYPE(Arena, addZombie, bool, (int,int));
+    CHECKTYPE(Arena, addPlayer, bool, (int,int));
+    CHECKTYPE(Arena, moveZombies, void, ());
+
+    Game g(1,1,1);
+    CHECKTYPE(Game, play, void, ());
+}
+
+void findTheZombie(const Arena& a, int& r, int& c)
+{
+    if      (a.numberOfZombiesAt(r-1, c) == 1) r--;
+    else if (a.numberOfZombiesAt(r+1, c) == 1) r++;
+    else if (a.numberOfZombiesAt(r, c-1) == 1) c--;
+    else if (a.numberOfZombiesAt(r, c+1) == 1) c++;
+    else assert(false);
+}
+
+void surroundWithPoison(Arena& a, int r, int c)
+{
+    a.setCellStatus(r-1, c, HAS_POISON);
+    a.setCellStatus(r+1, c, HAS_POISON);
+    a.setCellStatus(r, c-1, HAS_POISON);
+    a.setCellStatus(r, c+1, HAS_POISON);
+}
+
+void doBasicTests()
+{
+    {
+        Arena a(10, 20);
+        assert(a.addPlayer(2, 5));
+        Player* pp = a.player();
+        assert(pp->row() == 2  &&  pp->col() == 5  && ! pp->isDead());
+        assert(pp->move(NORTH) == "Player moved north.");
+        assert(pp->row() == 1  &&  pp->col() == 5  && ! pp->isDead());
+        assert(pp->move(NORTH) == "Player couldn't move; player stands.");
+        assert(pp->row() == 1  &&  pp->col() == 5  && ! pp->isDead());
+        pp->setDead();
+        assert(pp->row() == 1  &&  pp->col() == 5  && pp->isDead());
+    }
+    {
+        Arena a(10, 20);
+        int r = 8;
+        int c = 18;
+        assert(a.addPlayer(r, c));
+        for (int k = 0; k < MAXZOMBIES/4; k++)
+        {
+            assert(a.addZombie(r-1, c));
+            assert(a.addZombie(r+1, c));
+            assert(a.addZombie(r, c-1));
+            assert(a.addZombie(r, c+1));
+        }
+        assert(! a.player()->isDead());
+        a.moveZombies();
+        assert(a.player()->isDead());
+    }
+    {
+        Arena a(10, 20);
+        int r = 4;
+        int c = 4;
+        assert(a.addZombie(r, c));
+        surroundWithPoison(a, r, c);
+        assert(a.addPlayer(8, 18));
+        assert(a.zombieCount() == 1  &&  a.numberOfZombiesAt(r, c) == 1);
+        a.moveZombies();
+        assert(a.zombieCount() == 1  &&  a.numberOfZombiesAt(r, c) == 0);
+        findTheZombie(a, r, c);
+        assert(a.getCellStatus(r, c) != HAS_POISON);
+        a.moveZombies();
+        assert(a.zombieCount() == 1  &&  a.numberOfZombiesAt(r, c) == 1);
+        a.moveZombies();
+        assert(a.zombieCount() == 1  &&  a.numberOfZombiesAt(r, c) == 0);
+        findTheZombie(a, r, c);
+        a.moveZombies();
+        assert(a.zombieCount() == 1  &&  a.numberOfZombiesAt(r, c) == 1);
+        surroundWithPoison(a, r, c);
+        a.moveZombies();
+        assert(a.zombieCount() == 0  &&  a.numberOfZombiesAt(r, c) == 0);
+        assert(a.numberOfZombiesAt(r-1, c) == 0);
+        assert(a.numberOfZombiesAt(r+1, c) == 0);
+        assert(a.numberOfZombiesAt(r, c-1) == 0);
+        assert(a.numberOfZombiesAt(r, c+1) == 0);
+    }
+    {
+        Arena a(20, 20);
+        assert(a.addPlayer(1, 20));
+        struct Coord
+        {
+            int r;
+            int c;
+        };
+        assert(MAXZOMBIES == 100);
+        const int NDOOMED = 4;
+        Coord doomed[NDOOMED];
+        for (int k = 0; k < NDOOMED; k++)
+        {
+            doomed[k].r = 3;
+            doomed[k].c = 5*k+3;
+            assert(a.addZombie(doomed[k].r, doomed[k].c));
+            surroundWithPoison(a, doomed[k].r, doomed[k].c);
+            for (int i = 0; i < MAXZOMBIES/NDOOMED - 1; i++)
+                assert(a.addZombie(20, 20));
+        }
+        assert(!a.addZombie(20, 20));
+        assert(a.zombieCount() == MAXZOMBIES);
+        a.moveZombies();
+        assert(a.zombieCount() == MAXZOMBIES);
+        for (int k = 0; k < NDOOMED; k++)
+        {
+            findTheZombie(a, doomed[k].r, doomed[k].c);
+            surroundWithPoison(a, doomed[k].r, doomed[k].c);
+        }
+        a.moveZombies();
+        assert(a.zombieCount() == MAXZOMBIES);
+        a.moveZombies();
+        assert(a.zombieCount() == MAXZOMBIES - NDOOMED);
+        for (int k = 0; k < NDOOMED; k++)
+            assert(a.addZombie(20, 20));
+        assert(!a.addZombie(20, 20));
+          // If the program crashes after leaving this compound statement, you
+          // are probably messing something up when you delete a zombie after
+          // it dies (or you have mis-coded the destructor).
+          //
+          // Draw a picture of your m_zombies array before the zombies move,
+          // and also note the values of m_nZombies or any other variable you
+          // might have that's involved with the number of zombies.  Trace
+          // through your code step by step as the zombies move and die,
+          // updating the picture according to what the code says, not what
+          // you want it to do.  If you don't see a problem then, try tracing
+          // through the destruction of the arena.
+          //
+          // If you execute the code, use the debugger to check on the values
+          // of key variables at various points.  If you didn't try to learn
+          // to use the debugger, insert statements that write the values of
+          // key variables to cerr so you can trace the execution of your code
+          // and see the first place where something has gone amiss.  (Comment
+          // out the call to clearScreen in Arena::display so that your output
+          // doesn't disappear.)
+    }
+    cout << "Passed all basic tests (as long as when run under g31 there is no further message after this)." << endl;
+    exit(0);
+}
 int main()
 {
       // Create a game
       // Use this instead to create a mini-game:   Game g(3, 5, 2);
-    Game g(3, 5, 2);
+    //Game g(3, 5, 2);
 
       // Play the game
-    g.play();
+    //g.play();
+    doBasicTests(); // Remove this line after completing test.
+    return 0;       // Remove this line after completing test.
 }
 
 ///////////////////////////////////////////////////////////////////////////
