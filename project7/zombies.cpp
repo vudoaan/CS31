@@ -308,7 +308,7 @@ Arena::~Arena()
     for (int i = 0; i < m_nZombies; i++) {
       delete m_zombies[i];
     }
-
+    delete [] m_zombies;
 }
 
 int Arena::rows() const
